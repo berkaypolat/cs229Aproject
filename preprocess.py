@@ -48,19 +48,19 @@ themeList = list(set(themeList))
 entityTags = list(entityListSet)
 
 #write all tags to a txt file
-with open('entityTags.txt', 'w') as f:
+with open('labels/entityTags.txt', 'w') as f:
     for item in entityTags:
         f.write("%s\n" % item)
 
-with open('topicTags.txt', 'w') as f:
+with open('labels/topicTags.txt', 'w') as f:
     for item in topicList:
         f.write("%s\n" % item)
 
-with open('regionTags.txt', 'w') as f:
+with open('labels/regionTags.txt', 'w') as f:
     for item in regionList:
         f.write("%s\n" % item)
 
-with open('themeTags.txt', 'w') as f:
+with open('labels/themeTags.txt', 'w') as f:
     for item in themeList:
         f.write("%s\n" % item)
 
