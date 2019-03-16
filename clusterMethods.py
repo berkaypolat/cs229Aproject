@@ -87,6 +87,11 @@ def applyAffinityPropagatiion(matrix, max_iter=200, converge_iter=15):
                                      affinity='precomputed', verbose=False ).fit(matrix)
     return clustering
 
+"""
+Uses the similarity matrix to retrieve clustering results from 3 different
+clustering algorithms implemented above.
+Returns a list of clustering objects that contains labels (and other properties) for each algorithm
+"""
 def get_cluster_results(filename):
     sim_array = read_similarity_matrix('copy_similarityMatrix.txt')
     num_clusters_list = [i for i i range(10,20)]
@@ -96,6 +101,12 @@ def get_cluster_results(filename):
     clustering_objects = [spectral_clustering, dbscan_clustering, affprop_clustering]
     return clustering_objects
 
+"""
+Uses the resulting labels from each clustering algorithm to build a 3-dimensional scores array.
+Each article is compared with every other article that is assigned in the same cluster and their
+similarity scores are recorded.
+The resulting matrix is (n,n,3) matrix where n is the number of total articles
+"""
 def build_scores_matrix(clustering_objects):
     cluster_scores_matrix = np.zeros((sim_array.shape[0], sim_array.shape[1], len(clustering_objects)))
 
@@ -111,6 +122,8 @@ def build_scores_matrix(clustering_objects):
                 elif (labels[j] == cluster):
                     score = find_similarity_score(embeddings[i], embeddings[j])
                     row.append(score)
+                else:
+                    row.append(0)
             score_compare_matrix.append(row)
         score_array = np.array(score_compare_matrix)
         cluster_scores_matrix(:,:,i) = score_array
