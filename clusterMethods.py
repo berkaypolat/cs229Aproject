@@ -7,12 +7,16 @@ Created on Sat Mar 16 10:50:06 2019
 """
 import numpy as np
 from sklearn.cluster import SpectralClustering, DBSCAN, AffinityPropagation
+from scipy import spatial
+
+def find_similarity_score(article1, article2):
+    return spatial.distance.cosine(article1, article2)
 
 def read_similarity_matrix(filename):
     with open(filename, "r") as f:
         if f.mode != "r":
             raise FileNotFoundError("File could not be read.")
-        
+
         sim_matrix = []
         lines = f.readlines()
         for line in lines:
@@ -21,8 +25,6 @@ def read_similarity_matrix(filename):
                 sim_row.append(float(num))
             sim_matrix.append(sim_row)
         return np.array(sim_matrix)
-    
-sim_array = read_similarity_matrix('copy_similarityMatrix.txt')
 
 
 """
@@ -49,7 +51,7 @@ def applySpectralClustering(matrix, num_clusters_list):
 Performs DBSCAN Clustering from distance matrix
 Input arguments:
     - matrix: precomputed similarity(affinity) matrix
-    - max_distance_limit_list: a list of prechosen the maximum distances between 
+    - max_distance_limit_list: a list of prechosen the maximum distances between
       two samples for them to be considered as in the same neighborhood
 The returned clustering attributes are:
     - core_sample_indices_ : shape of [n_core_samples]
@@ -81,12 +83,36 @@ The returned clustering attributes are:
     - n_iter_: number of iterations taken to converge
 """
 def applyAffinityPropagatiion(matrix, max_iter=200, converge_iter=15):
-    clustering = AffinityPropagation(damping=0.5, max_iter=max_iter,convergence_iter=converge_iter, 
+    clustering = AffinityPropagation(damping=0.5, max_iter=max_iter,convergence_iter=converge_iter,
                                      affinity='precomputed', verbose=False ).fit(matrix)
     return clustering
-    
-    
-    
-    
-    
-    
+
+def get_cluster_results(filename):
+    sim_array = read_similarity_matrix('copy_similarityMatrix.txt')
+    num_clusters_list = [i for i i range(10,20)]
+    spectral_clustering = applySpectralClustering(sim_array, num_clusters_list)
+    dbscan_clustering = applyDBSCAN(sim_array)
+    affprop_clustering = applyAffinityPropagatiion(sim_array)
+    clustering_objects = [spectral_clustering, dbscan_clustering, affprop_clustering]
+    return clustering_objects
+
+def build_scores_matrix(clustering_objects):
+    cluster_scores_matrix = np.zeros((sim_array.shape[0], sim_array.shape[1], len(clustering_objects)))
+
+    for i in range(len(clustering_objects)):
+        labels = clustering_objects[i].labels_
+        scores_matrix = []
+        for i in range(len(labels.shape[0])):
+            row = []
+            cluster = labels[i]
+            for j in range(len(labels.shape[0])):
+                if(i == j):
+                    row.append(1)
+                elif (labels[j] == cluster):
+                    score = find_similarity_score(embeddings[i], embeddings[j])
+                    row.append(score)
+            score_compare_matrix.append(row)
+        score_array = np.array(score_compare_matrix)
+        cluster_scores_matrix(:,:,i) = score_array
+
+    return cluster_scores_matrix
