@@ -107,8 +107,8 @@ Each article is compared with every other article that is assigned in the same c
 similarity scores are recorded.
 The resulting matrix is (n,n,3) matrix where n is the number of total articles
 """
-def build_scores_matrix(clustering_objects):
-    cluster_scores_matrix = np.zeros((sim_array.shape[0], sim_array.shape[1], len(clustering_objects)))
+def build_scores_matrix(clustering_objects, embeddings):
+    cluster_scores_matrix = np.zeros((embeddings.shape[0], embeddings.shape[0], len(clustering_objects)))
 
     for i in range(len(clustering_objects)):
         labels = clustering_objects[i].labels_
