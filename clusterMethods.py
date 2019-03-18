@@ -129,3 +129,26 @@ def build_scores_matrix(clustering_objects, embeddings):
         cluster_scores_matrix(:,:,i) = score_array
 
     return cluster_scores_matrix
+
+"""
+Writes final version of cluster_scores_matrix to a txt file
+The matrix has a shape of (n,n,3)
+"""
+def write_matrix(matrix):
+     with open('clusterScoresMatrix.txt', 'w') as f:
+        f.write('# Array shape: {0}\n'.format(matrix.shape))
+        # This will iterate along the first axis (row axis)
+        # the last axis, being equivalent to matrix[i,:,:]
+        for slice in matrix:
+            np.savetxt(f, data_slice, fmt='%-7.2f')
+            # Indicating the next slice
+            f.write('# New slice\n')
+
+"""
+Reads the clusterScoresMatrix into numpy array format and turns it
+back to its original shape
+"""
+def read_matrix(filename, num_articles):
+    matrix = np.loadtxt(filename)  #returns 2D array
+    matrix = matrix.reshape((num_articles,num_articles,3))
+    return matrix
