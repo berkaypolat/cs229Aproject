@@ -94,11 +94,18 @@ Returns a list of clustering objects that contains labels (and other properties)
 """
 def get_cluster_results(filename):
     sim_array = read_similarity_matrix('copy_similarityMatrix.txt')
-    num_clusters_list = [i for i i range(10,20)]
+    clustering_objects = []
+    num_clusters_list = [i for i in range(10,20)]
     spectral_clustering = applySpectralClustering(sim_array, num_clusters_list)
+    for clustering in spectral_clustering:
+        clustering_objects.append(clustering)
+
     dbscan_clustering = applyDBSCAN(sim_array)
+    for clustering in dbscan_clustering:
+        clustering_objects.append(clustering)
+
     affprop_clustering = applyAffinityPropagatiion(sim_array)
-    clustering_objects = [spectral_clustering, dbscan_clustering, affprop_clustering]
+    clustering_objects.append(affprop_clustering)
     return clustering_objects
 
 """
@@ -107,26 +114,26 @@ Each article is compared with every other article that is assigned in the same c
 similarity scores are recorded.
 The resulting matrix is (n,n,3) matrix where n is the number of total articles
 """
-def build_scores_matrix(clustering_objects, embeddings):
-    cluster_scores_matrix = np.zeros((embeddings.shape[0], embeddings.shape[0], len(clustering_objects)))
+def build_scores_matrix(clustering_objects, embeddings, num_articles):
+    cluster_scores_matrix = np.zeros((1224, 1224, len(clustering_objects)))
 
     for i in range(len(clustering_objects)):
         labels = clustering_objects[i].labels_
         scores_matrix = []
-        for i in range(len(labels.shape[0])):
+        for k in range(labels.shape[0]):
             row = []
-            cluster = labels[i]
-            for j in range(len(labels.shape[0])):
-                if(i == j):
+            cluster = labels[k]
+            for j in range(labels.shape[0]):
+                if(k == j):
                     row.append(1)
                 elif (labels[j] == cluster):
-                    score = find_similarity_score(embeddings[i], embeddings[j])
+                    score = find_similarity_score(embeddings[k], embeddings[j])
                     row.append(score)
                 else:
                     row.append(0)
-            score_compare_matrix.append(row)
-        score_array = np.array(score_compare_matrix)
-        cluster_scores_matrix(:,:,i) = score_array
+            scores_matrix.append(row)
+        score_array = np.array(scores_matrix)
+        cluster_scores_matrix[:,:,i:i+1] = score_array.reshape(1224,1224,1)
 
     return cluster_scores_matrix
 
@@ -136,13 +143,13 @@ The matrix has a shape of (n,n,3)
 """
 def write_matrix(matrix):
      with open('clusterScoresMatrix.txt', 'w') as f:
-        f.write('# Array shape: {0}\n'.format(matrix.shape))
+        #f.write('# Array shape: {0}\n'.format(matrix.shape))
         # This will iterate along the first axis (row axis)
         # the last axis, being equivalent to matrix[i,:,:]
         for slice in matrix:
-            np.savetxt(f, data_slice, fmt='%-7.2f')
+            np.savetxt(f, slice, fmt='%-7.2f')
             # Indicating the next slice
-            f.write('# New slice\n')
+            #f.write('# New slice\n')
 
 """
 Reads the clusterScoresMatrix into numpy array format and turns it
@@ -150,5 +157,5 @@ back to its original shape
 """
 def read_matrix(filename, num_articles):
     matrix = np.loadtxt(filename)  #returns 2D array
-    matrix = matrix.reshape((num_articles,num_articles,3))
+    matrix = matrix.reshape((num_articles,num_articles,12))
     return matrix
