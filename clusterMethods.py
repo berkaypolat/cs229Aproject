@@ -26,6 +26,19 @@ def read_similarity_matrix(filename):
             sim_matrix.append(sim_row)
         return np.array(sim_matrix)
 
+"""
+This is an alternative to writing a matrix to txt file if original
+"write_matrix" function does not work due to numpy package version
+inconsisteny
+"""
+def write_matrix_v2(matrix):
+    with open('cms/CSM4.txt', 'w') as f:
+        for slice in matrix:
+            for arr in slice:
+                for item in arr[:-1]:
+                    f.write("%s," % item)
+                f.write("%s\n" % arr[len(arr) -1])
+
 
 """
 Performs Spectral Clustering
