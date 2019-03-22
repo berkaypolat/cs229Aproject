@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Mar 18 22:19:04 2019
-
+A python script to create heat maps from the resulting similarty scores matrix
+for each algorithm
 @author: berkaypolat
 """
 

@@ -1,5 +1,13 @@
+"""
+Created on Sat Mar 19 10:50:06 2019
+
+@author: berkaypolat
+"""
 import numpy as np
 
+"""
+Reads in the similarity matrix CSM3.txt and convert its to a numpy array
+"""
 def read_similarity_matrix(filename):
     with open(filename, "r") as f:
         if f.mode != "r":
@@ -17,7 +25,7 @@ def read_similarity_matrix(filename):
 
 """
 Commented out lines can be used to calculate the average score per each
-clustering algorithm. Current version computes the direct sum of each score of 
+clustering algorithm. Current version computes the direct sum of each score of
 each article per algorithm
 """
 def compute_scores(CSMatrix):
@@ -53,5 +61,5 @@ def compute_scores(CSMatrix):
         else:
             #dct_scores['affinity'] = total_avg_score
             dct_scores['affinity'] = score
-    
+
     return dct_scores

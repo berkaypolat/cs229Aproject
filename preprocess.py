@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Feb 28 09:47:43 2019
-
+This script reads in the article dataset and cleans out all the punctuation from the article content.
+It also extracts all the tags manually labaled for each article
 @author: berkaypolat
 """
 
@@ -77,6 +78,6 @@ for row in df['Content no HTML']:
     encodedList.append(outputStr)
 
 df['EncodedTags'] = encodedList
-   
+
 
 df.to_csv("newsData.csv")
